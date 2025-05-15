@@ -4,9 +4,29 @@
 */
 #pragma once
 
+#include <Magick++/Color.h>
+
 #include <string_view>
 #include <vector>
 
-auto load_image(std::string_view path) -> std::vector<char>;
+class ProcessImage {
 
-auto process_image(std::string_view path, char **argv) -> int;
+public:
+    ProcessImage();
+    virtual ~ProcessImage() = default;
+
+    auto process_image(std::string_view path) -> int;
+    auto str() -> std::string;
+
+private:
+    // Current image
+    size_t m_width;
+    size_t m_height;
+    std::vector<Magick::Color> m_pixels;
+
+    std::string_view m_path;
+    bool m_status;
+
+    auto load_image(std::string_view path) -> std::vector<char>;
+
+};

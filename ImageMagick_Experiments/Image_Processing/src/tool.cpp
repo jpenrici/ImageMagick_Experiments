@@ -25,14 +25,6 @@ auto ProcessImage::process_image(std::string_view path) -> int {
   Magick::InitializeMagick(currentPath.c_str());
   Magick::Image image;
 
-  struct FreePixelPacket {
-    void operator()(Magick::PixelPacket *pixelPacket) {
-      if (pixelPacket) {
-        delete pixelPacket;
-      }
-    }
-  };
-
   auto buffer = load_image(path);
   if (!buffer.empty()) {
     Magick::Blob blob(buffer.data(), buffer.size());
@@ -46,14 +38,8 @@ auto ProcessImage::process_image(std::string_view path) -> int {
       // Pixels
       Magick::Pixels pixel_view(image);
       Magick::PixelPacket *pixel_data = pixel_view.get(0, 0, m_width, m_height);
-      // std::unique_ptr<Magick::PixelPacket, FreePixelPacket> pixel_data(
-      //     pixel_view.get(0, 0, m_width, m_height));
       if (pixel_data) {
-        for (size_t i = 0; i < m_width * m_height; ++i) {
-          // m_pixels[i] = pixel_data.get()[i];
-          m_pixels[i] = pixel_data[i];
-        }
-        // Free Pixels
+        m_pixels.assign(pixel_data, pixel_data + m_width * m_height);
         pixel_view.sync();
       } else {
         std::println("Error getting image pixels.");
@@ -74,11 +60,21 @@ auto ProcessImage::process_image(std::string_view path) -> int {
 }
 
 auto ProcessImage::str() -> std::string {
-  std::string colors = "";
-  // for (const auto &pixel : m_pixels) {
-  //   colors += std::format("({}, {}, {})", pixel.redQuantum(),
-  //                         pixel.greenQuantum(), pixel.blueQuantum());
-  // }
+  size_t limit = 10;
+  std::span<Magick::Color> span1(m_pixels.begin(), limit);
+  std::span<Magick::Color> span2(m_pixels.end() - limit, limit);
+
+  std::string colors = "\n[ ";
+  for (const auto &pixel : span1) {
+    colors += std::format("({}, {}, {}) ", pixel.redQuantum(),
+                          pixel.greenQuantum(), pixel.blueQuantum());
+  }
+  colors += "\n ... ...\n ";
+  for (const auto &pixel : span2) {
+    colors += std::format("({}, {}, {}) ", pixel.redQuantum(),
+                          pixel.greenQuantum(), pixel.blueQuantum());
+  }
+  colors += " ]";
   std::string description =
       std::format("Image: {}\nDimension: {} x {}\nPixels: {}", m_path, m_width,
                   m_height, colors);

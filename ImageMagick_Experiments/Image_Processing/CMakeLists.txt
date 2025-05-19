@@ -10,12 +10,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(include)
 
 set(SOURCES
+  src/common.cpp
   src/main.cpp
   src/tool.cpp
 )
 
 set(RESOURCE_FILES
   Resources/bonsai.png
+  Resources/bonsai.jpg
 )
 
 add_executable(${PROGRAM_NAME} ${SOURCES})

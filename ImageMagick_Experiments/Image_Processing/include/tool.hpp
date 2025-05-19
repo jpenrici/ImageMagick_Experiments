@@ -15,18 +15,18 @@ public:
     ProcessImage();
     virtual ~ProcessImage() = default;
 
-    auto process_image(std::string_view path) -> int;
+    auto process_image(std::string_view path) -> bool;
+    auto export_csv(std::string_view path, std::string delimiter, bool hexadecimal) -> bool;
     auto str() -> std::string;
 
 private:
     // Current image
+    bool m_isRGBA;
     size_t m_width;
     size_t m_height;
+    size_t m_depth;
     std::vector<Magick::Color> m_pixels;
 
     std::string_view m_path;
     bool m_status;
-
-    auto load_image(std::string_view path) -> std::vector<char>;
-
 };

@@ -7,11 +7,11 @@
 
 namespace Common {
 
-auto load(std::string_view path) -> std::vector<char>;
-auto save(std::string_view path, std::string_view text) -> bool;
+auto load(const std::string_view path) -> std::vector<char>;
+auto save(const std::string_view path, const std::string_view text) -> bool;
 
 template <typename T>
-auto toStr(std::vector<T> vec, std::string delimiter = ",") -> std::string {
+auto toStr(const std::vector<T> vec,const std::string delimiter = ",") -> std::string {
     std::string out{};
     for (size_t i = 0; i < vec.size(); i++) {
         try {

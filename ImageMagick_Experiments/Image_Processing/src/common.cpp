@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string_view>
 
-auto Common::load(std::string_view path) -> std::vector<char> {
+auto Common::load(const std::string_view path) -> std::vector<char> {
 
   try {
     std::ifstream file(path.data(), std::ios::binary | std::ios::ate);
@@ -22,7 +22,8 @@ auto Common::load(std::string_view path) -> std::vector<char> {
   return {};
 }
 
-auto Common::save(std::string_view path, std::string_view text) -> bool {
+auto Common::save(const std::string_view path, const std::string_view text)
+    -> bool {
   try {
     std::ofstream outFile(std::string(path),
                           std::ofstream::out | std::ofstream::trunc);

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 
 project(ImageMagick_Experiment LANGUAGES CXX)
 
@@ -12,7 +12,7 @@ include_directories(include)
 set(SOURCES
   src/common.cpp
   src/main.cpp
-  src/tool.cpp
+  src/image_tool.cpp
 )
 
 set(RESOURCE_FILES
@@ -25,6 +25,7 @@ add_executable(${PROGRAM_NAME} ${SOURCES})
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 if (ImageMagick_FOUND)
     include_directories(${ImageMagick_INCLUDE_DIRS})
+    target_include_directories(${PROGRAM_NAME} PRIVATE include)
     target_link_libraries(${PROGRAM_NAME} PRIVATE ${ImageMagick_LIBRARIES})
     message(STATUS "ImageMagick found:")
     message(STATUS "  Directory: ${ImageMagick_INCLUDE_DIRS}")
